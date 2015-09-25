@@ -1,7 +1,7 @@
 package i18n_test
 
 import (
-	"github.com/nicksnyder/go-i18n/i18n"
+	"github.com/vsco/go-i18n/i18n"
 	"os"
 	"text/template"
 )

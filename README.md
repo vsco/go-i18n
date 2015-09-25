@@ -1,18 +1,18 @@
-go-i18n [![Build Status](https://secure.travis-ci.org/nicksnyder/go-i18n.png?branch=master)](http://travis-ci.org/nicksnyder/go-i18n)
+go-i18n [![Build Status](https://secure.travis-ci.org/parkr/go-i18n.png?branch=master)](http://travis-ci.org/parkr/go-i18n)
 =======
 
 go-i18n is a Go [package](#i18n-package) and a [command](#goi18n-command) that can be used to translate Go programs into multiple languages.
 * Supports pluralized strings using [CLDR plural rules](http://cldr.unicode.org/index/cldr-spec/plural-rules).
 * Supports strings with named variables using [text/template](http://golang.org/pkg/text/template/) syntax.
 * Translation files are simple JSON.
-* [Documented](http://godoc.org/github.com/nicksnyder/go-i18n) and [tested](https://travis-ci.org/nicksnyder/go-i18n)!
+* [Documented](http://godoc.org/github.com/vsco/go-i18n) and [tested](https://travis-ci.org/parkr/go-i18n)!
 
-Package i18n [![GoDoc](http://godoc.org/github.com/nicksnyder/go-i18n?status.png)](http://godoc.org/github.com/nicksnyder/go-i18n/i18n)
+Package i18n [![GoDoc](http://godoc.org/github.com/vsco/go-i18n?status.png)](http://godoc.org/github.com/vsco/go-i18n/i18n)
 ------------
 
 The i18n package provides runtime APIs for fetching translated strings.
 
-Command goi18n [![GoDoc](http://godoc.org/github.com/nicksnyder/go-i18n?status.png)](http://godoc.org/github.com/nicksnyder/go-i18n/goi18n)
+Command goi18n [![GoDoc](http://godoc.org/github.com/vsco/go-i18n?status.png)](http://godoc.org/github.com/vsco/go-i18n/goi18n)
 --------------
 
 The goi18n command provides functionality for managing the translation process.
@@ -21,7 +21,7 @@ The goi18n command provides functionality for managing the translation process.
 
 Make sure you have [setup GOPATH](http://golang.org/doc/code.html#GOPATH).
 
-    go get -u github.com/nicksnyder/go-i18n/goi18n
+    go get -u github.com/vsco/go-i18n/goi18n
     goi18n -help
 
 ### Workflow
