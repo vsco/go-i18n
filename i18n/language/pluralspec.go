@@ -1,8 +1,8 @@
 package language
 
 import (
-	"strings"
 	"math"
+	"strings"
 )
 
 // PluralSpec defines the CLDR plural rules for a language.
@@ -80,10 +80,28 @@ var pluralSpecs = map[string]*PluralSpec{
 			if ops.T == 0 && mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14) {
 				return Few
 			}
-			if	(ops.T == 0 && mod10 == 0) ||
+			if (ops.T == 0 && mod10 == 0) ||
 				(ops.T == 0 && mod10 >= 5 && mod10 <= 9) ||
 				(ops.T == 0 && mod100 >= 11 && mod100 <= 14) {
 				return Many
+			}
+			return Other
+		},
+	},
+	
+	// Bosnian
+	"bs": &PluralSpec{
+		Plurals: newPluralSet(One, Few, Other),
+		PluralFunc: func(ops *operands) Plural {
+			if ops.V == 0 &&
+				(ops.I%10 == 1 && ops.I%100 != 11) ||
+				(ops.F%10 == 1 && ops.F%100 != 11) {
+				return One
+			}
+			if ops.V == 0 &&
+				((ops.I%10 >= 2 && ops.I%10 <= 4) && (ops.I%100 != 12 && ops.I%100 != 13 && ops.I%100 != 14)) ||
+				((ops.F%10 >= 2 && ops.F%10 <= 4) && (ops.F%100 != 12 && ops.F%100 != 13 && ops.F%100 != 14)) {
+				return Few
 			}
 			return Other
 		},
@@ -114,6 +132,24 @@ var pluralSpecs = map[string]*PluralSpec{
 	"zh": &PluralSpec{
 		Plurals: newPluralSet(Other),
 		PluralFunc: func(ops *operands) Plural {
+			return Other
+		},
+	},
+
+	// Croatian
+	"hr": &PluralSpec{
+		Plurals: newPluralSet(One, Few, Other),
+		PluralFunc: func(ops *operands) Plural {
+			if ops.V == 0 &&
+				(ops.I%10 == 1 && ops.I%100 != 11) ||
+				(ops.F%10 == 1 && ops.F%100 != 11) {
+				return One
+			}
+			if ops.V == 0 &&
+				((ops.I%10 >= 2 && ops.I%10 <= 4) && (ops.I%100 != 12 && ops.I%100 != 13 && ops.I%100 != 14)) ||
+				((ops.F%10 >= 2 && ops.F%10 <= 4) && (ops.F%100 != 12 && ops.F%100 != 13 && ops.F%100 != 14)) {
+				return Few
+			}
 			return Other
 		},
 	},
@@ -194,7 +230,7 @@ var pluralSpecs = map[string]*PluralSpec{
 	"is": &PluralSpec{
 		Plurals: newPluralSet(One, Other),
 		PluralFunc: func(ops *operands) Plural {
-			if (ops.T == 0 && ops.I % 10 == 1 && ops.I % 100 != 11) || ops.T != 0 {
+			if (ops.T == 0 && ops.I%10 == 1 && ops.I%100 != 11) || ops.T != 0 {
 				return One
 			}
 			return Other
@@ -219,7 +255,7 @@ var pluralSpecs = map[string]*PluralSpec{
 			return Other
 		},
 	},
-	
+
 	// Korean
 	"ko": &PluralSpec{
 		Plurals: newPluralSet(Other),
@@ -227,7 +263,7 @@ var pluralSpecs = map[string]*PluralSpec{
 			return Other
 		},
 	},
-	
+
 	// Japanese
 	"ja": &PluralSpec{
 		Plurals: newPluralSet(Other),
@@ -278,7 +314,7 @@ var pluralSpecs = map[string]*PluralSpec{
 			if ops.V == 0 && mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14) {
 				return Few
 			}
-			if	(ops.V == 0 && ops.I != 1 && mod10 >= 0 && mod10 <= 1) ||
+			if (ops.V == 0 && ops.I != 1 && mod10 >= 0 && mod10 <= 1) ||
 				(ops.V == 0 && mod10 >= 5 && mod10 <= 9) ||
 				(ops.V == 0 && mod100 >= 12 && mod100 <= 14) {
 				return Many
@@ -286,7 +322,7 @@ var pluralSpecs = map[string]*PluralSpec{
 			return Other
 		},
 	},
-	
+
 	// Portuguese (European)
 	"pt": &PluralSpec{
 		Plurals: newPluralSet(One, Other),
@@ -321,10 +357,28 @@ var pluralSpecs = map[string]*PluralSpec{
 			if ops.V == 0 && mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14) {
 				return Few
 			}
-			if	(ops.V == 0 && mod10 == 0) ||
+			if (ops.V == 0 && mod10 == 0) ||
 				(ops.V == 0 && mod10 >= 5 && mod10 <= 9) ||
 				(ops.V == 0 && mod100 >= 11 && mod100 <= 14) {
 				return Many
+			}
+			return Other
+		},
+	},
+	
+	// Serbian
+	"sr": &PluralSpec{
+		Plurals: newPluralSet(One, Few, Other),
+		PluralFunc: func(ops *operands) Plural {
+			if ops.V == 0 &&
+				(ops.I%10 == 1 && ops.I%100 != 11) ||
+				(ops.F%10 == 1 && ops.F%100 != 11) {
+				return One
+			}
+			if ops.V == 0 &&
+				((ops.I%10 >= 2 && ops.I%10 <= 4) && (ops.I%100 != 12 && ops.I%100 != 13 && ops.I%100 != 14)) ||
+				((ops.F%10 >= 2 && ops.F%10 <= 4) && (ops.F%100 != 12 && ops.F%100 != 13 && ops.F%100 != 14)) {
+				return Few
 			}
 			return Other
 		},
@@ -363,11 +417,30 @@ var pluralSpecs = map[string]*PluralSpec{
 		},
 	},
 
+	// Thai
+	"th": &PluralSpec{
+		Plurals: newPluralSet(Other),
+		PluralFunc: func(ops *operands) Plural {
+			return Other
+		},
+	},
+	
+	// Tigrinya
+	"ti": &PluralSpec{
+		Plurals: newPluralSet(One, Other),
+		PluralFunc: func(ops *operands) Plural {
+			if ops.N == 0 || ops.N == 1 {
+				return One
+			}
+			return Other
+		},
+	},
+
 	// Turkish
 	"tr": &PluralSpec{
 		Plurals: newPluralSet(One, Other),
 		PluralFunc: func(ops *operands) Plural {
-			if (ops.I == 1 && ops.W == 0) {
+			if ops.I == 1 && ops.W == 0 {
 				return One
 			}
 			return Other
@@ -386,7 +459,7 @@ var pluralSpecs = map[string]*PluralSpec{
 			if ops.V == 0 && mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14) {
 				return Few
 			}
-			if	(ops.V == 0 && mod10 == 0) ||
+			if (ops.V == 0 && mod10 == 0) ||
 				(ops.V == 0 && mod10 >= 5 && mod10 <= 9) ||
 				(ops.V == 0 && mod100 >= 11 && mod100 <= 14) {
 				return Many

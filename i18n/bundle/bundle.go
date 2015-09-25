@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"reflect"
 
 	//	"launchpad.net/goyaml"
 
@@ -223,29 +224,33 @@ func (b *Bundle) translate(lang *language.Language, translationID string, args .
 		return translationID
 	}
 
+	var data interface{}
 	var count interface{}
-	if len(args) > 0 && isNumber(args[0]) {
-		count = args[0]
-		args = args[1:]
+	if argc := len(args); argc > 0 {
+		if isNumber(args[0]) {
+			count = args[0]
+			if argc > 1 {
+				data = args[1]
+			}
+		} else {
+			data = args[0]
+		}
 	}
 
-	plural, _ := lang.Plural(count)
-	template := translation.Template(plural)
-	if template == nil {
-		return translationID
-	}
-
-	var data map[string]interface{}
-	if len(args) > 0 {
-		data, _ = args[0].(map[string]interface{})
-	}
-
-	if isNumber(count) {
+	if count != nil {
 		if data == nil {
 			data = map[string]interface{}{"Count": count}
 		} else {
-			data["Count"] = count
+			dataMap := toMap(data)
+			dataMap["Count"] = count
+			data = dataMap
 		}
+	}
+
+	p, _ := lang.Plural(count)
+	template := translation.Template(p)
+	if template == nil {
+		return translationID
 	}
 
 	s := template.Execute(data)
@@ -261,4 +266,35 @@ func isNumber(n interface{}) bool {
 		return true
 	}
 	return false
+}
+
+func toMap(input interface{}) map[string]interface{} {
+	if data, ok := input.(map[string]interface{}); ok {
+		return data
+	}
+	v := reflect.ValueOf(input)
+	switch v.Kind() {
+	case reflect.Ptr:
+		return toMap(v.Elem().Interface())
+	case reflect.Struct:
+		return structToMap(v)
+	default:
+		return nil
+	}
+}
+
+// Converts the top level of a struct to a map[string]interface{}.
+// Code inspired by github.com/fatih/structs.
+func structToMap(v reflect.Value) map[string]interface{} {
+	out := make(map[string]interface{})
+	t := v.Type()
+	for i := 0; i < t.NumField(); i++ {
+		field := t.Field(i)
+		if field.PkgPath != "" {
+			// unexported field. skip.
+			continue
+		}
+		out[field.Name] = v.FieldByName(field.Name).Interface()
+	}
+	return out
 }

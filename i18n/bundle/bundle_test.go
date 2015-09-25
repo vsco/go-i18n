@@ -156,3 +156,106 @@ func testNewTranslation(t *testing.T, data map[string]interface{}) translation.T
 func languageWithTag(tag string) *language.Language {
 	return language.MustParse(tag)[0]
 }
+
+func createBenchmarkTranslateFunc(b *testing.B, translationTemplate interface{}, count interface{}, expected string) func(data interface{}) {
+	bundle := New()
+	lang := "en-US"
+	translationID := "translation_id"
+	translation, err := translation.NewTranslation(map[string]interface{}{
+		"id":          translationID,
+		"translation": translationTemplate,
+	})
+	if err != nil {
+		b.Fatal(err)
+	}
+	bundle.AddTranslation(languageWithTag(lang), translation)
+	tf, err := bundle.Tfunc(lang)
+	if err != nil {
+		b.Fatal(err)
+	}
+	return func(data interface{}) {
+		var result string
+		if count == nil {
+			result = tf(translationID, data)
+		} else {
+			result = tf(translationID, count, data)
+		}
+		if result != expected {
+			b.Fatalf("expected %q, got %q", expected, result)
+		}
+	}
+}
+
+func createBenchmarkPluralTranslateFunc(b *testing.B) func(data interface{}) {
+	translationTemplate := map[string]interface{}{
+		"one":   "{{.Person}} is {{.Count}} year old.",
+		"other": "{{.Person}} is {{.Count}} years old.",
+	}
+	count := 26
+	expected := "Bob is 26 years old."
+	return createBenchmarkTranslateFunc(b, translationTemplate, count, expected)
+}
+
+func createBenchmarkNonPluralTranslateFunc(b *testing.B) func(data interface{}) {
+	translationTemplate := "Hi {{.Person}}!"
+	expected := "Hi Bob!"
+	return createBenchmarkTranslateFunc(b, translationTemplate, nil, expected)
+}
+
+func BenchmarkTranslateNonPluralWithMap(b *testing.B) {
+	data := map[string]interface{}{
+		"Person": "Bob",
+	}
+	tf := createBenchmarkNonPluralTranslateFunc(b)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		tf(data)
+	}
+}
+
+func BenchmarkTranslateNonPluralWithStruct(b *testing.B) {
+	data := struct{ Person string }{Person: "Bob"}
+	tf := createBenchmarkNonPluralTranslateFunc(b)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		tf(data)
+	}
+}
+
+func BenchmarkTranslateNonPluralWithStructPointer(b *testing.B) {
+	data := &struct{ Person string }{Person: "Bob"}
+	tf := createBenchmarkNonPluralTranslateFunc(b)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		tf(data)
+	}
+}
+
+func BenchmarkTranslatePluralWithMap(b *testing.B) {
+	data := map[string]interface{}{
+		"Person": "Bob",
+	}
+	tf := createBenchmarkPluralTranslateFunc(b)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		tf(data)
+	}
+}
+
+func BenchmarkTranslatePluralWithStruct(b *testing.B) {
+	data := struct{ Person string }{Person: "Bob"}
+	tf := createBenchmarkPluralTranslateFunc(b)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		tf(data)
+	}
+}
+
+func BenchmarkTranslatePluralWithStructPointer(b *testing.B) {
+	data := &struct{ Person string }{Person: "Bob"}
+	tf := createBenchmarkPluralTranslateFunc(b)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		tf(data)
+	}
+}
